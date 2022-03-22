@@ -19,5 +19,49 @@ model Empresa {
   is_ativo   Boolean
   created_at DateTime @default(now())
 
+  Cargo   Cargo[]
+  Usuario Usuario[]
   @@map("empresas")
+}
+
+model Usuario {
+  id         Int      @id @default(autoincrement())
+  id_empresa Int
+  empresa    Empresa  @relation(fields: [id_empresa], references: [id])
+  nome       String
+  email      String
+  senha      String
+  telefone   String
+  id_cargo   Int
+  created_at DateTime @default(now())
+
+  @@map("usuarios")
+}
+
+model Cargo {
+  id         Int     @id @default(autoincrement())
+  id_empresa Int
+  empresa    Empresa @relation(fields: [id_empresa], references: [id])
+  descricao  String
+
+  CargoPermissoes CargoPermissoes[]
+  @@map("cargos")
+}
+
+model Permissao {
+  id        Int    @id @default(autoincrement())
+  descricao String
+
+  CargoPermissoes CargoPermissoes[]
+  @@map("permissoes")
+}
+
+model CargoPermissoes {
+  id           Int       @id @default(autoincrement())
+  id_cargo     Int
+  cargo        Cargo     @relation(fields: [id_cargo], references: [id])
+  id_permissao Int
+  permissao    Permissao @relation(fields: [id_permissao], references: [id])
+
+  @@map("cargo_permissoes")
 }

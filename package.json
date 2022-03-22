@@ -13,6 +13,7 @@
   "dependencies": {
     "@prisma/client": "^3.11.0",
     "@types/node": "^17.0.21",
+    "dotenv-cli": "^5.0.0",
     "express": "^4.17.3",
     "prisma": "^3.11.0"
   },
