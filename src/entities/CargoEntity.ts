@@ -16,6 +16,10 @@ export class CargoEntity {
     return cargo;
   };
 
+  findAll = async () => {
+    return await prismaClient.cargo.findMany();
+  };
+
   findOne = async (id: number) => {
     const cargo = await prismaClient.cargo.findUnique({
       where: { id },
@@ -25,10 +29,6 @@ export class CargoEntity {
       throw new PrismaClientValidationError();
     }
     return cargo;
-  };
-
-  findAll = async () => {
-    return await prismaClient.cargo.findMany();
   };
 
   updateOne = async (id: number, descricao: string) => {

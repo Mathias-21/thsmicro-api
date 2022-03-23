@@ -1,7 +1,5 @@
-import { EmpresaEntity } from "./../entities/EmpresaEntity";
-import { EmpresaProps } from "./../types/index";
+import { EmpresaEntity } from "../entities/EmpresaEntity";
 import { Request, Response } from "express";
-import { prismaClient } from "../database/prismaClient";
 import { Prisma } from "@prisma/client";
 
 export class EmpresaController {
@@ -73,12 +71,10 @@ export class EmpresaController {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2003") {
-          return res
-            .status(401)
-            .json({
-              message:
-                "Não foi possível excluir essa empresa pois algum cadastro esta vinculado a ela",
-            });
+          return res.status(401).json({
+            message:
+              "Não foi possível excluir essa empresa pois algum cadastro esta vinculado a ela",
+          });
         }
       }
       if (error instanceof Prisma.PrismaClientValidationError) {
