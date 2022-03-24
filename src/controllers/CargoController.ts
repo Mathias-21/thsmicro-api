@@ -15,7 +15,7 @@ export class CargoController {
         .json({ message: "Cargo cadastrado com sucesso", data: cargos });
     } catch (error) {
       if (Prisma.PrismaClientValidationError) {
-        return res.status(404).json({ message: "Empresa não encontrada" });
+        return res.status(404).json({ message: "Empresa não existente" });
       }
       return res.status(500).json(error);
     }
@@ -61,6 +61,9 @@ export class CargoController {
         data: cargos,
       });
     } catch (error) {
+      if (Prisma.PrismaClientValidationError) {
+        return res.status(404).json({ message: "Cargo não encontrado" });
+      }
       return res.status(500).json({ error });
     }
   }
@@ -70,10 +73,13 @@ export class CargoController {
       const id = Number(req.params.id);
 
       const cargoEntity = new CargoEntity();
-      const cargos = cargoEntity.deleteOne(id);
+      await cargoEntity.deleteOne(id);
 
       return res.json({ message: "Cargo removido com sucesso" });
     } catch (error) {
+      if (Prisma.PrismaClientValidationError) {
+        return res.status(404).json({ message: "Cargo não encontrado" });
+      }
       return res.status(500).json({ error });
     }
   }

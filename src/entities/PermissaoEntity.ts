@@ -1,7 +1,12 @@
+import { PrismaClientValidationError } from "@prisma/client/runtime";
 import { prismaClient } from "../database/prismaClient";
 
 export class PermissaoEntity {
   createOne = async (descricao: string) => {
+    if (descricao === "") {
+      throw new PrismaClientValidationError();
+    }
+
     const permissao = await prismaClient.permissao.create({
       data: { descricao },
     });
@@ -9,29 +14,43 @@ export class PermissaoEntity {
   };
 
   findAll = async () => {
-    const permissoes = prismaClient.permissao.findMany();
-    return permissoes;
+    return await prismaClient.permissao.findMany();
   };
 
   findOne = async (id: number) => {
     const permissao = await prismaClient.permissao.findUnique({
       where: { id },
     });
+
+    if (!permissao) {
+      throw new PrismaClientValidationError();
+    }
+
     return permissao;
   };
 
   updateOne = async (id: number, descricao: string) => {
-    const permissao = await prismaClient.permissao.update({
+    const permissao = await this.findOne(id);
+
+    if (!permissao) {
+      throw new PrismaClientValidationError();
+    }
+
+    return await prismaClient.permissao.update({
       where: { id },
       data: { descricao },
     });
-    return permissao;
   };
 
   deleteOne = async (id: number) => {
-    const permissao = await prismaClient.permissao.delete({
+    const permissao = await this.findOne(id);
+
+    if (!permissao) {
+      throw new PrismaClientValidationError();
+    }
+
+    return await prismaClient.permissao.delete({
       where: { id },
     });
-    return permissao;
   };
 }

@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
 import { PermissaoEntity } from "../entities/PermissaoEntity";
 
@@ -13,6 +14,9 @@ export class PermissaoController {
         .status(201)
         .json({ message: "Permissão cadastrada com sucesso", data: permissao });
     } catch (error) {
+      if (Prisma.PrismaClientValidationError) {
+        return res.status(400).json({ message: "Campo vazio" });
+      }
       return res.status(500).json(error);
     }
   };
@@ -37,6 +41,9 @@ export class PermissaoController {
 
       return res.json(permissao);
     } catch (error) {
+      if (Prisma.PrismaClientValidationError) {
+        return res.status(404).json({ message: "Permissão não encontrada" });
+      }
       return res.status(500).json(error);
     }
   };
@@ -54,6 +61,9 @@ export class PermissaoController {
         data: permissao,
       });
     } catch (error) {
+      if (Prisma.PrismaClientValidationError) {
+        return res.status(404).json({ message: "Permissão não encontrada" });
+      }
       return res.status(500).json(error);
     }
   };
@@ -67,6 +77,9 @@ export class PermissaoController {
 
       return res.json({ message: "Permissão excluida com sucesso" });
     } catch (error) {
+      if (Prisma.PrismaClientValidationError) {
+        return res.status(404).json({ message: "Permissão não encontrada" });
+      }
       return res.status(500).json(error);
     }
   };

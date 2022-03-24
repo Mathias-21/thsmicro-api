@@ -3,9 +3,19 @@ import { prismaClient } from "../database/prismaClient";
 import { PrismaClientValidationError } from "@prisma/client/runtime";
 
 export class EmpresaEntity {
-  createOne = async (props: EmpresaProps) => {
+  createOne = async (data: EmpresaProps) => {
+    if (
+      data.nome === "" ||
+      data.email === "" ||
+      data.telefone === "" ||
+      data.endereco === "" ||
+      data.is_ativo === undefined
+    ) {
+      throw new PrismaClientValidationError();
+    }
+
     return await prismaClient.empresa.create({
-      data: props,
+      data: data,
     });
   };
 
@@ -20,38 +30,29 @@ export class EmpresaEntity {
 
     if (!empresa) {
       throw new PrismaClientValidationError();
-    } else {
-      return empresa;
     }
+
+    return empresa;
   };
 
-  updateOne = async (id: number, props: EmpresaProps) => {
-    const empresa = await this.findOne(id);
-    await prismaClient.empresa.update({
-      where: { id },
-      data: props,
-    });
-
-    if (!empresa) {
+  updateOne = async (id: number, data: EmpresaProps) => {
+    if (!(await this.findOne(id))) {
       throw new PrismaClientValidationError();
-    } else {
-      return {
-        message: "Empresa atualizada com sucesso",
-      };
     }
+
+    return await prismaClient.empresa.update({
+      where: { id },
+      data: data,
+    });
   };
 
   deleteOne = async (id: number) => {
-    const empresa = await prismaClient.empresa.findUnique({
+    if (!(await this.findOne(id))) {
+      throw new PrismaClientValidationError();
+    }
+
+    return await prismaClient.empresa.delete({
       where: { id },
     });
-    if (!empresa) {
-      throw new PrismaClientValidationError();
-    } else {
-      await prismaClient.empresa.delete({
-        where: { id },
-      });
-      return { message: "Empresa excluida com sucesso" };
-    }
   };
 }

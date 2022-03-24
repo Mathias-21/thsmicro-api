@@ -5,11 +5,10 @@ import { EmpresaEntity } from "./EmpresaEntity";
 export class CargoEntity {
   createOne = async (descricao: string, id_empresa: number) => {
     const empresaEntity = new EmpresaEntity();
-    const empresa = await empresaEntity.findOne(id_empresa);
-
-    if (!empresa) {
+    if (!(await empresaEntity.findOne(id_empresa))) {
       throw new PrismaClientValidationError();
     }
+
     const cargo = await prismaClient.cargo.create({
       data: { descricao, id_empresa },
     });
@@ -32,6 +31,10 @@ export class CargoEntity {
   };
 
   updateOne = async (id: number, descricao: string) => {
+    if (!(await this.findOne(id))) {
+      throw new PrismaClientValidationError();
+    }
+
     return await prismaClient.cargo.update({
       where: { id },
       data: { descricao },
@@ -39,6 +42,10 @@ export class CargoEntity {
   };
 
   deleteOne = async (id: number) => {
+    if (!(await this.findOne(id))) {
+      throw new PrismaClientValidationError();
+    }
+
     return await prismaClient.cargo.delete({
       where: { id },
     });

@@ -12,6 +12,9 @@ export class EmpresaController {
 
       return res.json(empresa);
     } catch (error) {
+      if (Prisma.PrismaClientValidationError) {
+        return res.status(400).json({ message: "Campo(s) vazio(s)" });
+      }
       return res.status(500).json({ error });
     }
   }
@@ -48,10 +51,15 @@ export class EmpresaController {
       const id = Number(req.params.id);
       const EmpresaProps = req.body;
 
-      const empresaEntity = new EmpresaEntity();
-      const empresa = await empresaEntity.updateOne(id, EmpresaProps);
+      // const empresaEntity = new EmpresaEntity();
+      // const empresa = await empresaEntity.updateOne(id, EmpresaProps);
 
-      return res.json(empresa);
+      const empresa = await new EmpresaEntity().updateOne(id, EmpresaProps);
+
+      return res.json({
+        message: "Empresa atualizada com sucesso",
+        data: empresa,
+      });
     } catch (error) {
       if (Prisma.PrismaClientValidationError) {
         return res.status(404).json({ message: "Empresa não encontrada" });
@@ -64,10 +72,12 @@ export class EmpresaController {
     try {
       const id = Number(req.params.id);
 
-      const empresaEntity = new EmpresaEntity();
-      const empresa = await empresaEntity.deleteOne(id);
+      // const empresaEntity = new EmpresaEntity();
+      // await empresaEntity.deleteOne(id);
 
-      return res.json(empresa);
+      await new EmpresaEntity().deleteOne(id);
+
+      return res.json({ message: "Empresa excluida com sucesso" });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2003") {
@@ -78,7 +88,7 @@ export class EmpresaController {
         }
       }
       if (error instanceof Prisma.PrismaClientValidationError) {
-        return res.status(404).json({ message: "Empresa não encontrada" });
+        return res.status(404).json({ message: "Empresa não existente" });
       }
       return res.status(500).json(error);
     }

@@ -5,3 +5,8 @@ export interface EmpresaProps {
   endereco: string;
   is_ativo: boolean;
 }
+
+export interface CargoPermissoesProps {
+  id_cargo: number;
+  id_permissao: number;
+}
