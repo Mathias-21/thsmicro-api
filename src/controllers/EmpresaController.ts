@@ -10,7 +10,10 @@ export class EmpresaController {
       const empresaEntity = new EmpresaEntity();
       const empresa = await empresaEntity.createOne(EmpresaProps);
 
-      return res.json(empresa);
+      return res.status(201).json({
+        message: "Empresa cadastrada com sucesso",
+        data: empresa,
+      });
     } catch (error) {
       if (Prisma.PrismaClientValidationError) {
         return res.status(400).json({ message: "Campo(s) vazio(s)" });

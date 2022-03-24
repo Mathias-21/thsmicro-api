@@ -14,7 +14,7 @@ export class CargoPermissoesController {
       );
 
       return res.status(201).json({
-        message: "Cargo Permissoes criado com sucesso",
+        message: "Cargo Permissoes cadastrado com sucesso",
         data: cargoPermissoes,
       });
     } catch (error) {

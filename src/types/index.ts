@@ -10,3 +10,12 @@ export interface CargoPermissoesProps {
   id_cargo: number;
   id_permissao: number;
 }
+
+export interface UsuarioProps {
+  id_empresa: number;
+  nome: string;
+  email: string;
+  senha: string;
+  telefone: string;
+  id_cargo: number;
+}

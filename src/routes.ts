@@ -3,6 +3,7 @@ import { Router } from "express";
 import { EmpresaController } from "./controllers/EmpresaController";
 import { CargoController } from "./controllers/CargoController";
 import { PermissaoController } from "./controllers/PermissaoController";
+import { UsuarioController } from "./controllers/UsuarioController";
 
 const router = Router();
 
@@ -10,6 +11,7 @@ const empresa = new EmpresaController();
 const cargo = new CargoController();
 const permissao = new PermissaoController();
 const cargoPermissoes = new CargoPermissoesController();
+const usuarioController = new UsuarioController();
 
 router.post("/empresa", empresa.createEmpresa);
 router.get("/empresa", empresa.findAllEmpresas);
@@ -34,5 +36,11 @@ router.get("/cargo_permissoes", cargoPermissoes.findAllCargoPermissoes);
 router.get("/cargo_permissoes/:id", cargoPermissoes.findCargoPermissoes);
 router.put("/cargo_permissoes/:id", cargoPermissoes.updateCargoPermissoes);
 router.delete("/cargo_permissoes/:id", cargoPermissoes.deleteCargoPermissoes);
+
+router.post("/usuario", usuarioController.createUsuario);
+router.get("/usuario", usuarioController.findAllUsuarios);
+router.get("/usuario/:id", usuarioController.findUsuario);
+router.put("/usuario/:id", usuarioController.updateUsuario);
+router.delete("/usuario/:id", usuarioController.deleteUsuario);
 
 export { router };
