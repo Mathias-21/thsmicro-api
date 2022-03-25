@@ -14,10 +14,11 @@ export class UsuarioController {
         .status(201)
         .json({ message: "Usuário cadastrado com sucesso", data: usuario });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientValidationError) {
+      if (error === "EMPRESA_NOT_FOUND") {
         return res.status(404).json({ message: "Empresa não encontrada" });
-      }
-      if (error === "CAMPO_VAZIO") {
+      } else if (error === "CARGO_NOT_FOUND") {
+        return res.status(400).json({ message: "Cargo não encontrado" });
+      } else if (error === "CAMPO_VAZIO") {
         return res.status(400).json({ message: "Campo(s) vazio(s)" });
       }
       return res.status(500).json(error);
@@ -31,7 +32,6 @@ export class UsuarioController {
 
       return res.json(usuario);
     } catch (error) {
-      console.log(error);
       return res.status(500).json(error);
     }
   };
@@ -45,7 +45,7 @@ export class UsuarioController {
 
       return res.json(usuario);
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "USUARIO_NOT_FOUND") {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       return res.status(500).json(error);
@@ -65,7 +65,7 @@ export class UsuarioController {
         data: usuario,
       });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "USUARIO_NOT_FOUND") {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       return res.status(500).json(error);
@@ -80,7 +80,7 @@ export class UsuarioController {
 
       return res.json({ message: "Usuário excluido com sucesso" });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "USUARIO_NOT_FOUND") {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
       return res.status(500).json(error);

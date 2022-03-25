@@ -14,8 +14,8 @@ export class PermissaoController {
         .status(201)
         .json({ message: "Permissão cadastrada com sucesso", data: permissao });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
-        return res.status(400).json({ message: "Campo vazio" });
+      if (error === "CAMPO_VAZIO") {
+        return res.status(400).json({ message: "Campo(s) vazio(s)" });
       }
       return res.status(500).json(error);
     }
@@ -41,7 +41,7 @@ export class PermissaoController {
 
       return res.json(permissao);
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "PERMISSAO_NOT_FOUND") {
         return res.status(404).json({ message: "Permissão não encontrada" });
       }
       return res.status(500).json(error);
@@ -61,7 +61,7 @@ export class PermissaoController {
         data: permissao,
       });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "PERMISSAO_NOT_FOUND") {
         return res.status(404).json({ message: "Permissão não encontrada" });
       }
       return res.status(500).json(error);
@@ -77,7 +77,7 @@ export class PermissaoController {
 
       return res.json({ message: "Permissão excluida com sucesso" });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "PERMISSAO_NOT_FOUND") {
         return res.status(404).json({ message: "Permissão não encontrada" });
       }
       return res.status(500).json(error);

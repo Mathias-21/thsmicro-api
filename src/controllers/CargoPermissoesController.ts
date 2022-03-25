@@ -18,10 +18,12 @@ export class CargoPermissoesController {
         data: cargoPermissoes,
       });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
-        return res
-          .status(404)
-          .json({ message: "Cargo e/ou Permissão não existente" });
+      if (error === "CAMPO_VAZIO") {
+        return res.status(400).json({ message: "Campo(s) vazio(s)" });
+      } else if (error === "CARGO_NOT_FOUND") {
+        return res.status(404).json({ message: "Cargo não encontrado" });
+      } else if (error === "PERMISSAO_NOT_FOUND") {
+        return res.status(404).json({ message: "Permissão não encontrada" });
       }
       return res.status(500).json(error);
     }
@@ -47,7 +49,7 @@ export class CargoPermissoesController {
 
       return res.json(cargoPermissoes);
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "CARGO_PERMISSOES_NOT_FOUND") {
         return res
           .status(404)
           .json({ message: "Cargo Permissoes não encontrado" });
@@ -72,7 +74,7 @@ export class CargoPermissoesController {
         data: cargoPermissoes,
       });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "CARGO_PERMISSOES_NOT_FOUND") {
         return res
           .status(404)
           .json({ message: "Cargo Permissoes não encontrado" });
@@ -90,7 +92,7 @@ export class CargoPermissoesController {
 
       return res.json({ message: "Cargo Permissoes excluida com sucesso" });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "CARGO_PERMISSOES_NOT_FOUND") {
         return res
           .status(404)
           .json({ message: "Cargo Permissoes não encontrado" });

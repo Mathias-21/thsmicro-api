@@ -14,10 +14,12 @@ export class CargoController {
         .status(201)
         .json({ message: "Cargo cadastrado com sucesso", data: cargos });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "CARGO_NOT_FOUND" || error === "EMPRESA_NOT_FOUND") {
         return res.status(404).json({ message: "Empresa não existente" });
+      } else if (error === "CAMPO_VAZIO") {
+        return res.status(400).json({ message: "Campo(s) vazio(s)" });
       }
-      return res.status(500).json(error);
+      return res.status(500).json({ error });
     }
   }
 
@@ -41,7 +43,7 @@ export class CargoController {
 
       return res.json(cargos);
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "CARGO_NOT_FOUND") {
         return res.status(404).json({ message: "Cargo não encontrado" });
       }
       return res.status(500).json({ error });
@@ -61,7 +63,7 @@ export class CargoController {
         data: cargos,
       });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "CARGO_NOT_FOUND") {
         return res.status(404).json({ message: "Cargo não encontrado" });
       }
       return res.status(500).json({ error });
@@ -77,7 +79,7 @@ export class CargoController {
 
       return res.json({ message: "Cargo removido com sucesso" });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "CARGO_NOT_FOUND") {
         return res.status(404).json({ message: "Cargo não encontrado" });
       }
       return res.status(500).json({ error });

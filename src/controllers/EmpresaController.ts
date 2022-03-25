@@ -15,7 +15,7 @@ export class EmpresaController {
         data: empresa,
       });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "CAMPO_VAZIO") {
         return res.status(400).json({ message: "Campo(s) vazio(s)" });
       }
       return res.status(500).json({ error });
@@ -42,7 +42,7 @@ export class EmpresaController {
 
       return res.json(empresa);
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientValidationError) {
+      if (error === "EMPRESA_NOT_FOUND") {
         return res.status(404).json({ message: "Empresa não encontrada" });
       }
       return res.status(500).json({ error });
@@ -54,9 +54,6 @@ export class EmpresaController {
       const id = Number(req.params.id);
       const EmpresaProps = req.body;
 
-      // const empresaEntity = new EmpresaEntity();
-      // const empresa = await empresaEntity.updateOne(id, EmpresaProps);
-
       const empresa = await new EmpresaEntity().updateOne(id, EmpresaProps);
 
       return res.json({
@@ -64,10 +61,10 @@ export class EmpresaController {
         data: empresa,
       });
     } catch (error) {
-      if (Prisma.PrismaClientValidationError) {
+      if (error === "EMPRESA_NOT_FOUND") {
         return res.status(404).json({ message: "Empresa não encontrada" });
       }
-      return res.status(500).json(error);
+      return res.status(500).json({ error });
     }
   }
 
@@ -75,25 +72,19 @@ export class EmpresaController {
     try {
       const id = Number(req.params.id);
 
-      // const empresaEntity = new EmpresaEntity();
-      // await empresaEntity.deleteOne(id);
-
       await new EmpresaEntity().deleteOne(id);
 
       return res.json({ message: "Empresa excluida com sucesso" });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === "P2003") {
-          return res.status(401).json({
-            message:
-              "Não foi possível excluir essa empresa pois algum cadastro esta vinculado a ela",
-          });
-        }
-      }
-      if (error instanceof Prisma.PrismaClientValidationError) {
+      if (error === "EMPRESA_NOT_FOUND") {
         return res.status(404).json({ message: "Empresa não existente" });
       }
-      return res.status(500).json(error);
+      if (error === "EMPRESA_EM_USO") {
+        return res
+          .status(401)
+          .json({ message: "Existe(m) cargo(s) associado(s) a esta empresa" });
+      }
+      return res.status(500).json({ error });
     }
   }
 }

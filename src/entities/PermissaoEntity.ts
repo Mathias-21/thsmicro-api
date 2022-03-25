@@ -1,16 +1,18 @@
-import { PrismaClientValidationError } from "@prisma/client/runtime";
 import { prismaClient } from "../database/prismaClient";
 
 export class PermissaoEntity {
   createOne = async (descricao: string) => {
-    if (descricao === "") {
-      throw new PrismaClientValidationError();
-    }
-
-    const permissao = await prismaClient.permissao.create({
-      data: { descricao },
+    return new Promise(async (resolve, reject) => {
+      if (descricao === "") {
+        reject("CAMPO_VAZIO");
+      } else {
+        resolve(
+          await prismaClient.permissao.create({
+            data: { descricao },
+          })
+        );
+      }
     });
-    return permissao;
   };
 
   findAll = async () => {
@@ -18,39 +20,53 @@ export class PermissaoEntity {
   };
 
   findOne = async (id: number) => {
-    const permissao = await prismaClient.permissao.findUnique({
-      where: { id },
+    return new Promise(async (resolve, reject) => {
+      const permissao = await prismaClient.permissao.findUnique({
+        where: { id },
+      });
+
+      if (!permissao) {
+        reject("PERMISSAO_NOT_FOUND");
+      }
+
+      resolve(permissao);
     });
-
-    if (!permissao) {
-      throw new PrismaClientValidationError();
-    }
-
-    return permissao;
   };
 
   updateOne = async (id: number, descricao: string) => {
-    const permissao = await this.findOne(id);
+    return new Promise(async (resolve, reject) => {
+      const permissao = await prismaClient.permissao.findUnique({
+        where: { id },
+      });
 
-    if (!permissao) {
-      throw new PrismaClientValidationError();
-    }
-
-    return await prismaClient.permissao.update({
-      where: { id },
-      data: { descricao },
+      if (!permissao) {
+        reject("PERMISSAO_NOT_FOUND");
+      } else {
+        resolve(
+          await prismaClient.permissao.update({
+            where: { id },
+            data: { descricao },
+          })
+        );
+      }
     });
   };
 
   deleteOne = async (id: number) => {
-    const permissao = await this.findOne(id);
+    return new Promise(async (resolve, reject) => {
+      const permissao = await prismaClient.permissao.findUnique({
+        where: { id },
+      });
 
-    if (!permissao) {
-      throw new PrismaClientValidationError();
-    }
-
-    return await prismaClient.permissao.delete({
-      where: { id },
+      if (!permissao) {
+        reject("PERMISSAO_NOT_FOUND");
+      } else {
+        resolve(
+          await prismaClient.permissao.delete({
+            where: { id },
+          })
+        );
+      }
     });
   };
 }

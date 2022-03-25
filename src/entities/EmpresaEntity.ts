@@ -1,21 +1,26 @@
 import { EmpresaProps } from "./../types/index";
 import { prismaClient } from "../database/prismaClient";
 import { PrismaClientValidationError } from "@prisma/client/runtime";
+import { CargoEntity } from "./CargoEntity";
 
 export class EmpresaEntity {
   createOne = async (data: EmpresaProps) => {
-    if (
-      data.nome === "" ||
-      data.email === "" ||
-      data.telefone === "" ||
-      data.endereco === "" ||
-      data.is_ativo === undefined
-    ) {
-      throw new PrismaClientValidationError();
-    }
-
-    return await prismaClient.empresa.create({
-      data: data,
+    return new Promise(async (resolve, reject) => {
+      if (
+        data.nome === "" ||
+        data.email === "" ||
+        data.telefone === "" ||
+        data.endereco === "" ||
+        data.is_ativo === undefined
+      ) {
+        reject("CAMPO_VAZIO");
+      } else {
+        resolve(
+          await prismaClient.empresa.create({
+            data: data,
+          })
+        );
+      }
     });
   };
 
@@ -24,35 +29,62 @@ export class EmpresaEntity {
   };
 
   findOne = async (id: number) => {
-    const empresa = await prismaClient.empresa.findUnique({
-      where: { id },
+    return new Promise(async (resolve, reject) => {
+      const empresa = await prismaClient.empresa.findUnique({
+        where: { id },
+      });
+
+      if (!empresa) {
+        reject("EMPRESA_NOT_FOUND");
+      } else {
+        resolve(empresa);
+      }
     });
-
-    if (!empresa) {
-      throw new PrismaClientValidationError();
-    }
-
-    return empresa;
   };
 
   updateOne = async (id: number, data: EmpresaProps) => {
-    if (!(await this.findOne(id))) {
-      throw new PrismaClientValidationError();
-    }
+    return new Promise(async (resolve, reject) => {
+      const empresa = await prismaClient.empresa.findUnique({
+        where: { id },
+      });
 
-    return await prismaClient.empresa.update({
-      where: { id },
-      data: data,
+      if (!empresa) {
+        reject("EMPRESA_NOT_FOUND");
+      } else {
+        resolve(
+          await prismaClient.empresa.update({
+            where: { id },
+            data: data,
+          })
+        );
+      }
     });
   };
 
   deleteOne = async (id: number) => {
-    if (!(await this.findOne(id))) {
-      throw new PrismaClientValidationError();
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        const empresa = await prismaClient.empresa.findUnique({
+          where: { id },
+        });
 
-    return await prismaClient.empresa.delete({
-      where: { id },
+        const cargoEntity = new CargoEntity();
+        const cargo = await cargoEntity.findEmpresa(id);
+
+        if (cargo === "FOUND") {
+          reject("EMPRESA_EM_USO");
+        } else if (!empresa) {
+          reject("EMPRESA_NOT_FOUND");
+        } else {
+          resolve(
+            await prismaClient.empresa.delete({
+              where: { id },
+            })
+          );
+        }
+      } catch (error) {
+        reject(error);
+      }
     });
   };
 }
