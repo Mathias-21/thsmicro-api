@@ -69,17 +69,6 @@ model CargoPermissoes {
   @@map("cargo_permissoes")
 }
 
-model Produto {
-  id         Int      @id @default(autoincrement())
-  id_empresa Int
-  empresa    Empresa  @relation(fields: [id_empresa], references: [id])
-  nome       String
-  preco      Decimal
-  created_at DateTime @default(now())
-
-  @@map("produtos")
-}
-
 model Cliente {
   id         Int      @id @default(autoincrement())
   id_empresa Int
@@ -94,17 +83,41 @@ model Cliente {
   @@map("clientes")
 }
 
+model Produto {
+  id             Int              @id @default(autoincrement())
+  id_empresa     Int
+  empresa        Empresa          @relation(fields: [id_empresa], references: [id])
+  nome           String
+  preco          Decimal
+  created_at     DateTime         @default(now())
+  PedidoProdutos PedidoProdutos[]
+
+  @@map("produtos")
+}
+
 model Pedido {
-  id         Int      @id @default(autoincrement())
-  id_empresa Int
-  empresa    Empresa  @relation(fields: [id_empresa], references: [id])
-  id_usuario Int
-  usuario    Usuario  @relation(fields: [id_usuario], references: [id])
-  id_cliente Int
-  cliente    Cliente  @relation(fields: [id_cliente], references: [id])
-  descricao  String
-  status     String
-  created_at DateTime @default(now())
+  id             Int              @id @default(autoincrement())
+  id_empresa     Int
+  empresa        Empresa          @relation(fields: [id_empresa], references: [id])
+  id_usuario     Int
+  usuario        Usuario          @relation(fields: [id_usuario], references: [id])
+  id_cliente     Int
+  cliente        Cliente          @relation(fields: [id_cliente], references: [id])
+  descricao      String
+  status         String
+  created_at     DateTime         @default(now())
+  PedidoProdutos PedidoProdutos[]
 
   @@map("pedidos")
+}
+
+model PedidoProdutos {
+  id         Int     @id @default(autoincrement())
+  id_produto Int
+  produto    Produto @relation(fields: [id_produto], references: [id])
+  id_pedido  Int
+  pedido     Pedido  @relation(fields: [id_pedido], references: [id])
+  quantidade Int
+
+  @@map("pedido_produtos")
 }
