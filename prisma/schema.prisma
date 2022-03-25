@@ -17,6 +17,9 @@ model Empresa {
   created_at DateTime  @default(now())
   Cargo      Cargo[]
   Usuario    Usuario[]
+  Produto    Produto[]
+  Pedido     Pedido[]
+  Cliente    Cliente[]
 
   @@map("empresas")
 }
@@ -33,6 +36,7 @@ model Usuario {
   cargo      Cargo    @relation(fields: [id_cargo], references: [id])
   created_at DateTime @default(now())
 
+  Pedido Pedido[]
   @@map("usuarios")
 }
 
@@ -63,4 +67,44 @@ model CargoPermissoes {
   permissao    Permissao @relation(fields: [id_permissao], references: [id])
 
   @@map("cargo_permissoes")
+}
+
+model Produto {
+  id         Int      @id @default(autoincrement())
+  id_empresa Int
+  empresa    Empresa  @relation(fields: [id_empresa], references: [id])
+  nome       String
+  preco      Decimal
+  created_at DateTime @default(now())
+
+  @@map("produtos")
+}
+
+model Cliente {
+  id         Int      @id @default(autoincrement())
+  id_empresa Int
+  empresa    Empresa  @relation(fields: [id_empresa], references: [id])
+  nome       String
+  email      String
+  telefone   String
+  endereco   String
+  created_at DateTime @default(now())
+  Pedido     Pedido[]
+
+  @@map("clientes")
+}
+
+model Pedido {
+  id         Int      @id @default(autoincrement())
+  id_empresa Int
+  empresa    Empresa  @relation(fields: [id_empresa], references: [id])
+  id_usuario Int
+  usuario    Usuario  @relation(fields: [id_usuario], references: [id])
+  id_cliente Int
+  cliente    Cliente  @relation(fields: [id_cliente], references: [id])
+  descricao  String
+  status     String
+  created_at DateTime @default(now())
+
+  @@map("pedidos")
 }
