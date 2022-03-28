@@ -105,6 +105,7 @@ model Pedido {
   cliente        Cliente          @relation(fields: [id_cliente], references: [id])
   descricao      String
   status         String
+  valor_total    Decimal
   created_at     DateTime         @default(now())
   PedidoProdutos PedidoProdutos[]
 

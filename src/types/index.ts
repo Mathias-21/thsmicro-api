@@ -33,3 +33,12 @@ export interface ProdutoProps {
   nome: string;
   preco: number;
 }
+
+export interface PedidoProps {
+  id_empresa: number;
+  id_usuario: number;
+  id_cliente: number;
+  descricao: string;
+  status: string;
+  valor_total: number;
+}
