@@ -19,3 +19,11 @@ export interface UsuarioProps {
   telefone: string;
   id_cargo: number;
 }
+
+export interface ClienteProps {
+  id_empresa: number;
+  nome: string;
+  email: string;
+  telefone: string;
+  endereco: string;
+}

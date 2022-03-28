@@ -1,3 +1,4 @@
+import { ClienteController } from "./controllers/ClienteController";
 import { CargoPermissoesController } from "./controllers/CargoPermissoesController";
 import { Router } from "express";
 import { EmpresaController } from "./controllers/EmpresaController";
@@ -12,6 +13,7 @@ const cargo = new CargoController();
 const permissao = new PermissaoController();
 const cargoPermissoes = new CargoPermissoesController();
 const usuarioController = new UsuarioController();
+const clienteController = new ClienteController();
 
 router.post("/empresa", empresa.createEmpresa);
 router.get("/empresa", empresa.findAllEmpresas);
@@ -42,5 +44,11 @@ router.get("/usuario", usuarioController.findAllUsuarios);
 router.get("/usuario/:id", usuarioController.findUsuario);
 router.put("/usuario/:id", usuarioController.updateUsuario);
 router.delete("/usuario/:id", usuarioController.deleteUsuario);
+
+router.post("/cliente", clienteController.createCliente);
+router.get("/cliente", clienteController.findAllClientes);
+router.get("/cliente/:id", clienteController.findCliente);
+router.put("/cliente/:id", clienteController.updateCliente);
+router.delete("/cliente/:id", clienteController.deleteCliente);
 
 export { router };
