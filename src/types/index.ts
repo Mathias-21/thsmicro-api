@@ -27,3 +27,9 @@ export interface ClienteProps {
   telefone: string;
   endereco: string;
 }
+
+export interface ProdutoProps {
+  id_empresa: number;
+  nome: string;
+  preco: number;
+}

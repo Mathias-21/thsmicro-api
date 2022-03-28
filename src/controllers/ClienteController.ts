@@ -42,6 +42,9 @@ export class ClienteController {
 
       return res.json(cliente);
     } catch (error) {
+      if (error === "CLIENTE_NOT_FOUND") {
+        return res.status(404).json({ message: "Cliente não encontrado" });
+      }
       return res.status(500).json({ error });
     }
   };
@@ -59,6 +62,13 @@ export class ClienteController {
         data: cliente,
       });
     } catch (error) {
+      if (error === "CLIENTE_NOT_FOUND") {
+        return res.status(404).json({ message: "Cliente não encontrado" });
+      } else if (error === "CAMPO_VAZIO") {
+        return res.status(400).json({ message: "Campo(s) vazio(s)" });
+      } else if (error === "EMPRESA_NOT_FOUND") {
+        return res.status(404).json({ message: "Empresa não encontrada" });
+      }
       return res.status(500).json({ error });
     }
   };
@@ -72,6 +82,9 @@ export class ClienteController {
 
       return res.json({ message: "Cliente excluido com sucesso" });
     } catch (error) {
+      if (error === "CLIENTE_NOT_FOUND") {
+        return res.status(404).json({ message: "Cliente não encontrado" });
+      }
       return res.status(500).json({ error });
     }
   };

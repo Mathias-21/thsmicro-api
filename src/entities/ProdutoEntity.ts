@@ -1,25 +1,19 @@
-import { EmpresaEntity } from "./EmpresaEntity";
 import { prismaClient } from "../database/prismaClient";
-import { ClienteProps } from "../types";
+import { ProdutoProps } from "../types";
+import { EmpresaEntity } from "./EmpresaEntity";
 
-export class ClienteEntity {
-  createOne = async (data: ClienteProps) => {
+export class ProdutoEntity {
+  createOne = async (data: ProdutoProps) => {
     return new Promise(async (resolve, reject) => {
       try {
         const empresaEntity = new EmpresaEntity();
         const empresa = await empresaEntity.findOne(data.id_empresa);
-        if (
-          data.id_empresa === null ||
-          data.nome === "" ||
-          data.email === "" ||
-          data.telefone === "" ||
-          data.endereco === ""
-        ) {
+        if (data.id_empresa === null || data.nome === "" || data.preco === 0) {
           reject("CAMPO_VAZIO");
         } else if (!empresa) {
           reject("EMPRESA_NOT_FOUND");
         } else {
-          resolve(await prismaClient.cliente.create({ data }));
+          resolve(await prismaClient.produto.create({ data }));
         }
       } catch (error) {
         reject(error);
@@ -30,13 +24,13 @@ export class ClienteEntity {
   findAll = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const cliente = await prismaClient.cliente.findMany({
+        const produto = await prismaClient.produto.findMany({
           include: {
             empresa: true,
           },
         });
 
-        resolve(cliente);
+        resolve(produto);
       } catch (error) {
         reject(error);
       }
@@ -46,7 +40,7 @@ export class ClienteEntity {
   findOne = async (id: number) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const cliente = await prismaClient.cliente.findUnique({
+        const produto = await prismaClient.produto.findUnique({
           where: {
             id,
           },
@@ -55,10 +49,10 @@ export class ClienteEntity {
           },
         });
 
-        if (!cliente) {
-          reject("CLIENTE_NOT_FOUND");
+        if (!produto) {
+          reject("PRODUTO_NOT_FOUND");
         } else {
-          resolve(cliente);
+          resolve(produto);
         }
       } catch (error) {
         reject(error);
@@ -66,29 +60,23 @@ export class ClienteEntity {
     });
   };
 
-  updateOne = async (id: number, data: ClienteProps) => {
+  updateOne = async (id: number, data: ProdutoProps) => {
     return new Promise(async (resolve, reject) => {
       try {
         const empresaEntity = new EmpresaEntity();
         const empresa = await empresaEntity.findOne(data.id_empresa);
 
         if (!(await this.findOne(id))) {
-          reject("CLIENTE_NOT_FOUND");
+          reject("PRODUTO_NOT_FOUND");
         } else if (!empresa) {
           reject("EMPRESA_NOT_FOUND");
-        } else if (
-          data.id_empresa === null ||
-          data.nome === "" ||
-          data.email === "" ||
-          data.telefone === "" ||
-          data.endereco === ""
-        ) {
-          reject("CAMPO_VAZIO");
         } else {
           resolve(
-            await prismaClient.cliente.update({
-              where: { id },
-              data: data,
+            await prismaClient.produto.update({
+              data,
+              where: {
+                id,
+              },
             })
           );
         }
@@ -102,11 +90,13 @@ export class ClienteEntity {
     return new Promise(async (resolve, reject) => {
       try {
         if (!(await this.findOne(id))) {
-          reject("CLIENTE_NOT_FOUND");
+          reject("PRODUTO_NOT_FOUND");
         } else {
           resolve(
-            await prismaClient.cliente.delete({
-              where: { id },
+            await prismaClient.produto.delete({
+              where: {
+                id,
+              },
             })
           );
         }

@@ -5,6 +5,7 @@ import { EmpresaController } from "./controllers/EmpresaController";
 import { CargoController } from "./controllers/CargoController";
 import { PermissaoController } from "./controllers/PermissaoController";
 import { UsuarioController } from "./controllers/UsuarioController";
+import { ProdutoController } from "./controllers/ProdutoController";
 
 const router = Router();
 
@@ -14,6 +15,7 @@ const permissao = new PermissaoController();
 const cargoPermissoes = new CargoPermissoesController();
 const usuarioController = new UsuarioController();
 const clienteController = new ClienteController();
+const produtoController = new ProdutoController();
 
 router.post("/empresa", empresa.createEmpresa);
 router.get("/empresa", empresa.findAllEmpresas);
@@ -50,5 +52,11 @@ router.get("/cliente", clienteController.findAllClientes);
 router.get("/cliente/:id", clienteController.findCliente);
 router.put("/cliente/:id", clienteController.updateCliente);
 router.delete("/cliente/:id", clienteController.deleteCliente);
+
+router.post("/produto", produtoController.createProduto);
+router.get("/produto", produtoController.findAllProdutos);
+router.get("/produto/:id", produtoController.findProduto);
+router.put("/produto/:id", produtoController.updateProduto);
+router.delete("/produto/:id", produtoController.deleteProduto);
 
 export { router };
