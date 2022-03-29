@@ -1,6 +1,5 @@
 import { EmpresaEntity } from "../entities/EmpresaEntity";
 import { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
 
 export class EmpresaController {
   async createEmpresa(req: Request, res: Response) {

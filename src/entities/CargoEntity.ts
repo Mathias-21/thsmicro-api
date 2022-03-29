@@ -1,4 +1,3 @@
-import { PrismaClientValidationError } from "@prisma/client/runtime";
 import { prismaClient } from "../database/prismaClient";
 import { EmpresaEntity } from "./EmpresaEntity";
 

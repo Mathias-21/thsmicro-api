@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { CargoEntity } from "../entities/CargoEntity";
-import { Prisma } from "@prisma/client";
 
 export class CargoController {
   async createCargo(req: Request, res: Response) {

@@ -88,7 +88,7 @@ model Produto {
   id_empresa     Int
   empresa        Empresa          @relation(fields: [id_empresa], references: [id])
   nome           String
-  preco          Decimal
+  preco          Decimal          @db.Decimal(10, 2)
   created_at     DateTime         @default(now())
   PedidoProdutos PedidoProdutos[]
 
@@ -105,7 +105,7 @@ model Pedido {
   cliente        Cliente          @relation(fields: [id_cliente], references: [id])
   descricao      String
   status         String
-  valor_total    Decimal
+  valor_total    Decimal          @db.Decimal(10, 2)
   created_at     DateTime         @default(now())
   PedidoProdutos PedidoProdutos[]
 
