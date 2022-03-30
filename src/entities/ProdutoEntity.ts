@@ -105,4 +105,23 @@ export class ProdutoEntity {
       }
     });
   };
+
+  findPreco = async (id: number) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const produto = await prismaClient.produto.findUnique({
+          where: {
+            id: id,
+          },
+          select: {
+            preco: true,
+          },
+        });
+
+        resolve(Number(produto?.preco));
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
 }

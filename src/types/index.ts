@@ -42,3 +42,11 @@ export interface PedidoProps {
   status: string;
   valor_total: number;
 }
+
+export interface PedidoProdutosProps {
+  id: number;
+  id_produto: number;
+  id_pedido: number;
+  quantidade: number;
+  produto: ProdutoProps;
+}

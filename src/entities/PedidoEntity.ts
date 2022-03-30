@@ -1,11 +1,12 @@
 import { ClienteEntity } from "./ClienteEntity";
 import { UsuarioEntity } from "./UsuarioEntity";
 import { EmpresaEntity } from "./EmpresaEntity";
-import { PedidoProps } from "./../types/index";
 import { prismaClient } from "../database/prismaClient";
+import { Pedido } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime";
 
 export class PedidoEntity {
-  createOne = async (data: PedidoProps) => {
+  createOne = async (data: Pedido) => {
     return new Promise(async (resolve, reject) => {
       try {
         const empresaEntity = new EmpresaEntity();
@@ -27,7 +28,7 @@ export class PedidoEntity {
           data.id_cliente === null ||
           data.descricao === "" ||
           data.status === "" ||
-          data.valor_total === 0
+          data.valor_total === new Decimal(0)
         ) {
           reject("CAMPO_VAZIO");
         } else {
@@ -109,7 +110,7 @@ export class PedidoEntity {
     });
   };
 
-  updateOne = async (id: number, data: PedidoProps) => {
+  updateOne = async (id: number, data: Pedido) => {
     return new Promise(async (resolve, reject) => {
       try {
         const empresaEntity = new EmpresaEntity();

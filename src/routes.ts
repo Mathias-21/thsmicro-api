@@ -7,6 +7,7 @@ import { PermissaoController } from "./controllers/PermissaoController";
 import { UsuarioController } from "./controllers/UsuarioController";
 import { ProdutoController } from "./controllers/ProdutoController";
 import { PedidoController } from "./controllers/PedidoController";
+import { PedidoProdutosController } from "./controllers/PedidoProdutosController";
 
 const router = Router();
 
@@ -18,6 +19,7 @@ const usuarioController = new UsuarioController();
 const clienteController = new ClienteController();
 const produtoController = new ProdutoController();
 const pedidoController = new PedidoController();
+const pedidoProdutosController = new PedidoProdutosController();
 
 router.post("/empresa", empresa.createEmpresa);
 router.get("/empresa", empresa.findAllEmpresas);
@@ -66,5 +68,17 @@ router.get("/pedido", pedidoController.findAllPedidos);
 router.get("/pedido/:id", pedidoController.findPedido);
 router.put("/pedido/:id", pedidoController.updatePedido);
 router.delete("/pedido/:id", pedidoController.deletePedido);
+
+router.post("/pedido_produtos", pedidoProdutosController.createPedidoProdutos);
+router.get("/pedido_produtos", pedidoProdutosController.findAllPedidoProdutos);
+router.get("/pedido_produtos/:id", pedidoProdutosController.findPedidoProdutos);
+router.put(
+  "/pedido_produtos/:id",
+  pedidoProdutosController.updatePedidoProdutos
+);
+router.delete(
+  "/pedido_produtos/:id",
+  pedidoProdutosController.deletePedidoProdutos
+);
 
 export { router };
