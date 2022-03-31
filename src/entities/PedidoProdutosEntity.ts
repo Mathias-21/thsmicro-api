@@ -2,39 +2,15 @@ import { PedidoEntity } from "./PedidoEntity";
 import { ProdutoEntity } from "./ProdutoEntity";
 import { prismaClient } from "../database/prismaClient";
 import { Pedido, PedidoProdutos, Produto } from "@prisma/client";
-import { Decimal } from "@prisma/client/runtime";
-import { PedidoProps } from "../types";
 
 export class PedidoProdutosEntity {
   createOne = async (data: PedidoProdutos) => {
-    return new Promise<
-      PedidoProdutos & {
-        produto: Produto;
-        pedido: Pedido;
-      }
-    >(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const produtoEntity = new ProdutoEntity();
         const pedidoEntity = new PedidoEntity();
-        const pedidoProdutosEntity = new PedidoProdutosEntity();
-
         const produto = await produtoEntity.findOne(data.id_produto);
         const pedido = await pedidoEntity.findOne(data.id_pedido);
-
-        const preco = await produtoEntity.findPreco(data.id_produto);
-        const quantidade = await pedidoProdutosEntity.findQuantidade(
-          data.id_pedido
-        );
-        const total = Number(preco) * Number(quantidade);
-
-        console.log(`preco: ${preco}`);
-        console.log(`quantidade: ${quantidade}`);
-        console.log(`total: ${total}`);
-
-        // pedidoEntity.updateOne(data.id_pedido, {
-        //   valor_total: new Decimal(total),
-        //   pedidoIds.
-        // });
 
         if (!produto) {
           reject("PRODUTO_NOT_FOUND");
@@ -47,15 +23,23 @@ export class PedidoProdutosEntity {
         ) {
           reject("CAMPO_VAZIO");
         } else {
-          // pedidoEntity.updateOne(data.id_pedido);
+          await prismaClient.pedidoProdutos.create({
+            data,
+            include: {
+              pedido: true,
+              produto: true,
+            },
+          });
+
+          const pedidoProdutosEntity = new PedidoProdutosEntity();
+          const quantidade = await pedidoProdutosEntity.findQuantidade(
+            data.id_pedido,
+            data.id_produto
+          );
+          const preco = await produtoEntity.findPreco(data.id_produto);
+          const valorTotal = Number(quantidade) * Number(preco);
           resolve(
-            await prismaClient.pedidoProdutos.create({
-              data,
-              include: {
-                pedido: true,
-                produto: true,
-              },
-            })
+            await pedidoEntity.updateValorTotal(data.id_pedido, valorTotal)
           );
         }
       } catch (error) {
@@ -69,10 +53,10 @@ export class PedidoProdutosEntity {
       try {
         resolve(
           await prismaClient.pedidoProdutos.findMany({
-            include: {
-              pedido: true,
-              produto: true,
-            },
+            // include: {
+            //   pedido: true,
+            //   produto: true,
+            // },
           })
         );
       } catch (error) {
@@ -151,24 +135,25 @@ export class PedidoProdutosEntity {
     });
   };
 
-  findQuantidade = async (id: number) => {
+  findQuantidade = async (id_pedido: number, id_produto: number) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const pedidos = await prismaClient.pedidoProdutos.groupBy({
+        const pedido = await prismaClient.pedidoProdutos.groupBy({
           by: ["id_pedido"],
-          where: { id_pedido: id },
+          where: {
+            id_pedido: id_pedido,
+            id_produto: id_produto,
+          },
           _sum: {
             quantidade: true,
           },
         });
 
-        let qtde: number | any;
-        pedidos.forEach((pedido) => {
-          qtde = pedido._sum.quantidade;
-        });
+        let quantidade: number | any;
 
-        console.log(qtde);
-        resolve(Number(qtde));
+        pedido.forEach((pedido) => (quantidade = pedido._sum.quantidade));
+
+        resolve(quantidade);
       } catch (error) {
         reject(error);
       }

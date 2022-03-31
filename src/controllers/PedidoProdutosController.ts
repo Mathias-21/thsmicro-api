@@ -1,7 +1,5 @@
 import { PedidoProdutosEntity } from "./../entities/PedidoProdutosEntity";
 import { Request, Response } from "express";
-import { PedidoEntity } from "../entities/PedidoEntity";
-import { ProdutoEntity } from "../entities/ProdutoEntity";
 
 export class PedidoProdutosController {
   createPedidoProdutos = async (req: Request, res: Response) => {
@@ -28,7 +26,6 @@ export class PedidoProdutosController {
     try {
       const pedidoProdutosEntity = new PedidoProdutosEntity();
       const pedidoProdutos = await pedidoProdutosEntity.findAll();
-      await pedidoProdutosEntity.findQuantidade(6);
 
       return res.json(pedidoProdutos);
     } catch (error) {
@@ -65,7 +62,10 @@ export class PedidoProdutosController {
         PedidoProdutosProps
       );
 
-      return res.json(pedidoProdutos);
+      return res.json({
+        message: "Pedido_produtos atualizado com sucesso",
+        data: pedidoProdutos,
+      });
     } catch (error) {
       if (error === "PEDIDOPRODUTO_NOT_FOUND") {
         return res
@@ -87,9 +87,9 @@ export class PedidoProdutosController {
       const id = Number(req.params.id);
 
       const pedidoProdutosEntity = new PedidoProdutosEntity();
-      const pedidoProdutos = await pedidoProdutosEntity.deleteOne(id);
+      await pedidoProdutosEntity.deleteOne(id);
 
-      return res.json(pedidoProdutos);
+      return res.json({ message: "Produto_pedidos excluido com sucesso" });
     } catch (error) {
       if (error === "PEDIDOPRODUTO_NOT_FOUND") {
         return res

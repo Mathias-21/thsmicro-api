@@ -27,8 +27,7 @@ export class PedidoEntity {
           data.id_usuario === null ||
           data.id_cliente === null ||
           data.descricao === "" ||
-          data.status === "" ||
-          data.valor_total === new Decimal(0)
+          data.status === ""
         ) {
           reject("CAMPO_VAZIO");
         } else {
@@ -156,6 +155,32 @@ export class PedidoEntity {
             })
           );
         }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  updateValorTotal = async (id: number, valorTotal: number) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const vlrTtl = await prismaClient.pedido.findUnique({
+          where: { id },
+          select: {
+            valor_total: true,
+          },
+        });
+
+        const valorTotalAntigo = Number(vlrTtl?.valor_total);
+
+        resolve(
+          await prismaClient.pedido.update({
+            where: { id },
+            data: {
+              valor_total: valorTotalAntigo + valorTotal,
+            },
+          })
+        );
       } catch (error) {
         reject(error);
       }

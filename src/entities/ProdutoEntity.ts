@@ -118,7 +118,9 @@ export class ProdutoEntity {
           },
         });
 
-        resolve(Number(produto?.preco));
+        const preco = Number(produto?.preco);
+
+        resolve(preco);
       } catch (error) {
         reject(error);
       }
